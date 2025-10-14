@@ -24,8 +24,8 @@
 #define SCH_SYNTAX_ERROR -2
 
 extern osQueue dispatcher_queue;         ///< Commands queue
-extern osQueue executer_cmd_queue;       ///< Executer commands queue
-extern osQueue executer_stat_queue;      ///< Executer result queue
+extern osQueue console_status_queue;       ///< result queue for consloe
+extern osQueue comm_status_queue;      ///< result queue for csp
 extern osSemaphore repo_data_sem;        ///< Data repository mutex
 extern osSemaphore repo_data_fp_sem;     ///< Flight plan repository mutex
 extern osSemaphore repo_machine_sem;     ///< State status_machine repository mutex

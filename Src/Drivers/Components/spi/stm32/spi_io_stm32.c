@@ -36,7 +36,7 @@ static uint32_t const spi_clock_en[SPI_MAX_BUS_NUMBER + 1] = {
 // Assume osSemaphoreGiven(osSemaphore *sem)
 // Assume ERROR_BUSY and ERROR_NOT_SUPPORTED defined elsewhere
 
-static void spi_enable_clock(uint32_t ui32SpiNum)
+static __attribute__((unused)) void spi_enable_clock(uint32_t ui32SpiNum)
 {
     if (ui32SpiNum == 0 || ui32SpiNum > SPI_MAX_BUS_NUMBER) {
         return;
@@ -77,7 +77,6 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
 {
     SPI_TypeDef *spi = spi_periph[me->ui32SpiPort];
     uint32_t i;
-    uint8_t data = 0;
     for (i = 0; i < ui32Length; i++) {
         // Wait for TXE
         while (!(spi->SR & SPI_SR_TXE)) {}
@@ -104,7 +103,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
         spi->DR = data;
         // Wait for RXNE
         while (!(spi->SR & SPI_SR_RXNE)) {}
-        volatile uint8_t rec = (uint8_t)spi->DR;
+        (void)spi->DR;
         }
     // Wait for not busy
     while (spi->SR & SPI_SR_BSY) {}

@@ -10,7 +10,7 @@
 #include "log_utils.h"
 #include "repoCommand.h"
 
-cmd_result_t power_heater_control(uint32_t argc, uint8_t *argv[]);
-cmd_result_t power_heater_status(uint32_t argc, uint8_t *argv[]);
+void  power_heater_control(uint32_t argc, uint8_t *argv[], cmd_result_t * result);
+void power_heater_status(uint32_t argc, uint8_t *argv[], cmd_result_t * result);
 
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_INCLUDE_POWERCOMMAND_H_ */

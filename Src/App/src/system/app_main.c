@@ -17,14 +17,14 @@
 #include "mainFS.h"
 #include "taskInit.h"
 #include "app/system/taskHousekeeping.h"
-#include "app/system/cmdAPP.h"
+
 #include "board.h"
 #include "bsp_uart.h"
 #include "printf.h"
 
 #include "log_utils.h"
 #include "osThread.h"
-static char *tag = "app_main";
+
 
 /**
  * App specific initialization routines
@@ -34,8 +34,6 @@ static char *tag = "app_main";
  */
 void initAppHook(void *params)
 {
-    /** Include app commands */
-    cmd_app_init();
 
     /** Initialize custom CSP interfaces */
 #if defined(SCH_OS_LINUX) && (SCH_COMM_ENABLE)
@@ -50,14 +48,10 @@ void initAppHook(void *params)
 int app_main(void)
 {
     /** Call framework main, shouldn't return */
-	volatile uint32_t i;
+
 	bsp_uart_console_init();
-//	while (1)
-//	{
-//		printf("Hello World \n");
-//
-//		for (i=0;i<1000000;i++);
-//
-//	}
+	bsp_uart_kiss_init();
+
     suchai_main();
+    return 0;
 }

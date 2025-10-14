@@ -17,8 +17,8 @@
 #include "globals.h"
 
 osQueue dispatcher_queue;         ///< Commands queue
-osQueue executer_cmd_queue;       ///< Executer commands queue
-osQueue executer_stat_queue;      ///< Executer result queue
+osQueue console_status_queue;       ///< console queue for command response output
+osQueue comm_status_queue;      ///< CSP comm queue for command output
 osSemaphore repo_data_sem;        ///< Data repository mutex
 osSemaphore repo_data_fp_sem;     ///< Flight plan repository mutex
 osSemaphore repo_machine_sem;     ///< State status_machine repository mutex

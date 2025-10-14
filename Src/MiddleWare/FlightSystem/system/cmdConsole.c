@@ -20,33 +20,22 @@ static const char *tag = "cmdConsole";
 
 
 
-cmd_result_t cmd_set_logger(int argc, char *argv[])
+void cmd_set_logger(int lvl, int node)
 {
-    int lvl;
-    int node;
 
-    if((argc != 3) )
-        return CMD_SYNTAX_ERROR;
-    lvl = atoi(argv[1]);
-
-    if(lvl > LOG_LVL_VERBOSE)
-        return CMD_ERROR;
-    node = atoi(argv[2]);
 
     log_set((log_level_t)lvl, node);
     LOGR(tag, "Log level %d to node %d", log_lvl, log_node);
-    return CMD_OK;
+    return ;
 }
 
-
-cmd_result_t Cmd_help(uint32_t argc, uint8_t *argv[]) {
+/*
+ * The help command only output to uart console
+ */
+void Cmd_help(uint32_t argc, uint8_t *argv[],  cmd_result_t * result) {
 
 	cmd_table_entry_t *pEntry;
 
-	cmd_result_t result = {
-			.result = 0,
-			.error = ERROR_OK
-	};
 
 	printf("\nAvailable commands\r\n");
 	printf("------------------\r\n");
@@ -66,7 +55,12 @@ cmd_result_t Cmd_help(uint32_t argc, uint8_t *argv[]) {
 		pEntry++;
 
 	}
+
 	// Return success.
-	return (result);
+	result->error = CMDLINE_OK;
+	result->result.i = 0;
+	result->output[0] = 0;
+	result->outputSize = 0;
+	return;
 
 }

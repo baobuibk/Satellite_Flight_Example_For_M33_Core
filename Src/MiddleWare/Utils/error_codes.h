@@ -77,12 +77,14 @@
 //! @{
 //
 //*****************************************************************************
-#define CMDLINE_OK        (0)
-#define CMDLINE_BAD_CMD         (1)
-#define CMDLINE_TOO_MANY_ARGS   (2)
-#define CMDLINE_TOO_FEW_ARGS   (3)
-#define CMDLINE_INVALID_ARG   (4)
-#define CMDLINE_NOT_RETURN   (5)
+enum {
+CMDLINE_OK   =     (0),
+CMDLINE_BAD_CMD ,
+CMDLINE_TOO_MANY_ARGS,
+CMDLINE_TOO_FEW_ARGS,
+CMDLINE_INVALID_ARG ,
+CMDLINE_NOT_RETURN
+};
 
 
 enum {

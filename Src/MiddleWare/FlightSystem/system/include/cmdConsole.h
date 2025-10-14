@@ -44,8 +44,8 @@
  * con_set_logger("%d %d", "3 10", 2);
  * @endcode
  */
-cmd_result_t cmd_set_logger(int argc, char *argv[]);
+void cmd_set_logger(int lvl, int node);
 
-cmd_result_t Cmd_help(uint32_t argc, uint8_t *argv[]) ;
+void Cmd_help(uint32_t argc, uint8_t *argv[],  cmd_result_t * result) ;
 
 #endif /* CMD_CONSOLE_H */

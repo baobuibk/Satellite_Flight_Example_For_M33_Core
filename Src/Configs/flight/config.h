@@ -71,6 +71,7 @@
 #define SCH_COMM_ZMQ_OUT             "tcp://127.0.0.1:8002"  ///< CSP ZMQ Out socket URI
 #define SCH_CSP_CONN_TIMEOUT         1000  ///< CSP connection accept timeout
 #define SCH_CSP_READ_TIMEOUT         100  ///< CSP connection read timeout
+#define SCH_CSP_ID			         9  ///< CSP connection read timeout
 
 /* Data repository settings */
 #define SCH_ST_RAM                   0
@@ -92,7 +93,7 @@
 #define SCH_ST_FRAM_SIZE             32768  ///< Size of the FRAM memory
 #define SCH_ST_FP_TLB_FRAM      ///< Flight Plan TLB is stored in FRAM (else stored in flash)
 
-#define SCH_CMD_QUEUE_LEN            50  ///< Commands queue length
+#define SCH_CMD_QUEUE_LEN            10  ///< Commands queue length
 #define SCH_FP_MAX_ENTRIES           255  ///< Max number of flight plan entries
 #define SCH_CMD_MAX_ENTRIES          255  ///< Max number of commands in the repository
 #define SCH_SECTIONS_PER_PAYLOAD     10  ///< Memory blocks for storing each payload type TODO: Make configurable per payload

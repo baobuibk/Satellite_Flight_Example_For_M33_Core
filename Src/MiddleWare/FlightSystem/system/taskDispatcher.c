@@ -16,6 +16,7 @@
 
 #include "taskDispatcher.h"
 #include "printf.h"
+#include "error_codes.h"
 static const char *tag = "Dispatcher";
 
 void taskDispatcher(void *param)
@@ -44,15 +45,17 @@ void taskDispatcher(void *param)
                 dat_set_system_var(dat_exp_executed_cmds, executed_cmds); //Set new count
  //               osQueueSend(executer_cmd_queue, &new_cmd, portMAX_DELAY);
                 LOGD(tag, "Cmd: %d, :%s", new_cmd.id, new_cmd.args.args);
-
-                cmd_result = new_cmd.function(new_cmd.args.nargs, new_cmd.args.argv);
-
-
-                LOGI(tag, "Command: %d, error: %d, result: %d", new_cmd.id, cmd_result.error, cmd_result.result);
-
+                 new_cmd.function(new_cmd.args.nargs, new_cmd.args.argv, &cmd_result);
+                LOGI(tag, "Command: %d, error: %d", new_cmd.id, cmd_result.error);
+ //send the result to source
+                if (CMD_SRC_CONSOLE == new_cmd.cmdSrc)
+                {
+                	osQueueSend(console_status_queue, &cmd_result, 100);
+                }
+                else osQueueSend(comm_status_queue, &cmd_result, 100);
                 /* Get the result from Executer Stat Queue - BLOCKING */
  //               osQueueReceive(executer_stat_queue, &cmd_result, portMAX_DELAY);
-                if (cmd_result.error != SCH_OK)
+                if (cmd_result.error != CMDLINE_OK)
                 {
                     int failed_cmds = dat_get_system_var(dat_exp_failed_cmds);
                     failed_cmds = failed_cmds + 1;

@@ -28,7 +28,6 @@
 #include "taskConsole.h"
 #if SCH_COMM_ENABLE
 #include "taskCommunications.h"
-static csp_iface_t *csp_if_zmqhub;
 #endif
 
 

@@ -17,6 +17,7 @@
 #include "repoDataSchema.h"
 static const char *tag = "repoDataSchema";
 
+
 dat_sys_var_t dat_get_status_var_def(dat_status_address_t address)
 {
     dat_sys_var_t var = {0};
@@ -54,22 +55,22 @@ dat_sys_var_t dat_get_status_var_def_name(char *name)
     return var;
 }
 
-void dat_print_system_var(dat_sys_var_t *status)
-{
-    assert(status != NULL);
-
-    switch (status->type) {
-        case 'u':
-            printf("%3d, %-20s, %u, %d\r\n", status->address, status->name, status->value.u, status->status);
-            break;
-        case 'd':
-            printf("%3d, %-20s, %d, %d\r\n", status->address, status->name, status->value.i, status->status);
-            break;
-        case 'f':
-            printf("%3d, %-20s, %.6f, %d\r\n", status->address, status->name, status->value.f, status->status);
-            break;
-        default:
-            printf("%3d, %-20s, %#X, %d\r\n", status->address, status->name, status->value.u, status->status);
-    }
-}
+//void dat_print_system_var(dat_sys_var_t *status)
+//{
+//    assert(status != NULL);
+//
+//    switch (status->type) {
+//        case 'u':
+//            printf("%3d, %-20s, %u, %d\r\n", status->address, status->name, status->value.u, status->status);
+//            break;
+//        case 'd':
+//            printf("%3d, %-20s, %d, %d\r\n", status->address, status->name, status->value.i, status->status);
+//            break;
+//        case 'f':
+//            printf("%3d, %-20s, %.6f, %d\r\n", status->address, status->name, status->value.f, status->status);
+//            break;
+//        default:
+//            printf("%3d, %-20s, %#X, %d\r\n", status->address, status->name, status->value.u, status->status);
+//    }
+//}
 

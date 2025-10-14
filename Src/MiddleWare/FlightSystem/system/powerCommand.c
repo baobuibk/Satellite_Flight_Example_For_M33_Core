@@ -21,41 +21,66 @@ static const char *tag = "power";
 //}
 
 
-cmd_result_t power_heater_control(uint32_t argc, uint8_t *argv[])
+void  power_heater_control(uint32_t argc, uint8_t *argv[], cmd_result_t * result)
 {
     value32_t v;
-
-    if((argc != 2) )
-        return CMD_SYNTAX_ERROR;
+    result->error = CMDLINE_OK;
+    if((argc < 2) )
+    {
+        result->error =  CMDLINE_TOO_FEW_ARGS;
+        return;
+    }
+    if((argc > 2) )
+    {
+        result->error =  CMDLINE_TOO_MANY_ARGS;
+        return;
+    }
 
     if (!strcmp((char *)argv[1],"on"))
 		{
     	//power on heater
     	v.i = POWER_ON;
+    	memcpy(result->output, "heater power on", sizeof("heater power on"));
+    	result->outputSize = sizeof("heater power on");
     	LOGI(tag,"heater power on");
 		}
     else if (!strcmp((char *)argv[1],"off"))
 		{
     	//power off heater
     	v.i = POWER_OFF;
+    	memcpy(result->output, "heater power off", sizeof("heater power off"));
+    	result->outputSize = sizeof("heater power off");
     	LOGI(tag,"heater power off");
 		}
     else { //wrong argument
     	LOGI(tag,"wrong argument");
-    	return CMD_SYNTAX_ERROR;
+    	result->error = CMDLINE_INVALID_ARG;
     }
     dat_set_status_var(data_exp_12V_heater_status,v);
-    return CMD_OK;
+    return;
 
 }
-cmd_result_t power_heater_status(uint32_t argc, uint8_t *argv[])
+void power_heater_status(uint32_t argc, uint8_t *argv[], cmd_result_t * result)
 {
 	value32_t v;
     if((argc != 1) )
-        return CMD_SYNTAX_ERROR;
+    {
+    	result->error =  CMDLINE_TOO_MANY_ARGS;
+    	return;
+    }
     v = dat_get_status_var(data_exp_12V_heater_status);
-    if (POWER_OFF == v.i ) { LOGI(tag,"12V_heater off");}
-    else LOGI(tag,"12V_heater on");
-    return CMD_OK;
+    if (POWER_OFF == v.i ) {
+
+    	memcpy(result->output, "heater power off", sizeof("heater power off"));
+    	result->outputSize = sizeof("heater power off");
+    	LOGI(tag,"12V_heater off");
+    }
+    else
+    	{
+    		memcpy(result->output, "heater power on", sizeof("heater power on"));
+    		result->outputSize = sizeof("heater power on");
+    		LOGI(tag,"12V_heater on");
+    	}
+    return ;
 
 }

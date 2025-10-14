@@ -19,11 +19,18 @@
 #define LWL_UART						USART3
 #elif defined(STM32F7_DISCO)
 #define CLI_UART						USART1
+#define KISS_UART						USART6
 #endif
 
 #define 	CONSOLE_UART_INT_PRI		14
 
 #define CONSOLE_UART_RX_BUFFER_SIZE		1024
 #define CONSOLE_UART_TX_BUFFER_SIZE		1024
+
+
+#define 	KISS_UART_INT_PRI		14
+
+#define UART_KISS_RX_BUFFER_SIZE		1024
+#define UART_KISS_TX_BUFFER_SIZE		1024
 
 #endif /* BSP_BOARD_H_ */

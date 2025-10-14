@@ -60,9 +60,11 @@ typedef enum dat_status_address_enum {
     dat_exp_hrs_wo_reset,         ///< Hours since last reset
     dat_exp_reset_counter,        ///< Number of reset since first boot
     dat_exp_sw_wdt,               ///< Software watchdog timer counter
-    dat_exp_board_temp,               ///< Temperature value of the main board
+    dat_exp_cmds,        ///< Total number of executed commands
     dat_exp_executed_cmds,        ///< Total number of executed commands
     dat_exp_failed_cmds,          ///< Total number of failed commands
+    dat_exp_board_temp,               ///< Temperature value of the main board
+
 
     /// RTC: Rtc related variables
     dat_rtc_date_time,            ///< RTC current unix time
@@ -77,7 +79,6 @@ typedef enum dat_status_address_enum {
 	dat_exp_NTC5_temp,
 	dat_exp_NTC6_temp,
 	dat_exp_NTC7_temp,
-	dat_exp_NTC8_temp,
 	// TEC status
 	data_exp_tec0_status,         //disabling, heating, cooling, error
 	data_exp_tec0_voltage,
@@ -171,7 +172,7 @@ typedef struct __attribute__((packed)) dat_sys_var {
     uint16_t address;   ///< Variable address or index (in the data storage)
     char name[MAX_VAR_NAME];      ///< Variable name (max 24 chars)
     char type;          ///< Variable type (u: uint, i: int, f: float)
-    int8_t status;      ///< Variable is status (1), is config (0), or uninitialized (-1)
+    int16_t status;      ///< Variable is status (1), is config (0), or uninitialized (-1)
     value32_t value;    ///< Variable default value
 } dat_sys_var_t;
 
@@ -188,83 +189,81 @@ typedef struct __attribute__((packed)) dat_sys_var_short {
  * List of status variables with address, name, type and default values
  * This list is useful to decide how to store and send the status variables
  */
-static const dat_sys_var_t dat_status_list[] = {\
-		{dat_exp_opmode, "exp_op_mode",'u', DAT_IS_STATUS, DAT_EXP_OPMODE_NORMAL },///< General operation mode
-	    {dat_exp_last_reset,"exp_last_reset", 'u', DAT_IS_STATUS, 0 },          ///< Last reset source
-	    {dat_exp_hrs_alive, "exp_hrs_alive", 'u', DAT_IS_STATUS, 0 },           ///< Hours since first boot
-	    {dat_exp_hrs_wo_reset, "exp_hrs_wo_reset",'u', DAT_IS_STATUS, 0 },        ///< Hours since last reset
-	    {dat_exp_reset_counter, "exp_reset_counter", 'u',DAT_IS_STATUS, 0 },       ///< Number of reset since first boot
-	    {dat_exp_sw_wdt, "exp_sw_wdt", DAT_IS_STATUS, 'u', 0 },              ///< Software watchdog timer counter
-	    {dat_exp_board_temp, "exp_board_temp", DAT_IS_STATUS, 'u',0 },               ///< Temperature value of the main board
-	    {dat_exp_executed_cmds, "exp_executed_cmds", DAT_IS_STATUS,'u', 0 },        ///< Total number of executed commands
-	    {dat_exp_failed_cmds, "exp_failed_cmds", DAT_IS_STATUS, 'u', 0 },            ///< Total number of failed commands
+/**
+ * List of status variables with address, name, type and default values
+ * This list is useful to decide how to store and send the status variables
+ */
+static const dat_sys_var_t dat_status_list[] = {
+    { dat_exp_opmode,          "exp_op_mode",          'u', DAT_IS_STATUS, { .u = DAT_EXP_OPMODE_NORMAL } },
+    { dat_exp_last_reset,      "exp_last_reset",       'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_hrs_alive,       "exp_hrs_alive",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_hrs_wo_reset,    "exp_hrs_wo_reset",     'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_reset_counter,   "exp_reset_counter",    'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_sw_wdt,          "exp_sw_wdt",           'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_cmds,            "exp_received_cmds",    'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_executed_cmds,   "exp_executed_cmds",    'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_failed_cmds,     "exp_failed_cmds",      'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_board_temp,      "exp_board_temp",       'u', DAT_IS_STATUS, { .u = 0 } },
 
-	    /// RTC: Rtc related variables
-		{ dat_rtc_date_time,"rtc_date_time", DAT_IS_STATUS, 'u', 0 },             ///< RTC current unix time
+    { dat_rtc_date_time,       "rtc_date_time",        'u', DAT_IS_STATUS, { .u = 0 } },
 
-		// Experiment chamber variable
-		//NTC temperature
-		{dat_exp_NTC0_temp,"exp_NTC0_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC1_temp,"exp_NTC1_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC2_temp,"exp_NTC2_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC3_temp,"exp_NTC3_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC4_temp,"exp_NTC4_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC5_temp,"exp_NTC5_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC6_temp,"exp_NTC6_temp", DAT_IS_STATUS, 'u', 0 },
-		{dat_exp_NTC7_temp,"exp_NTC7_temp", DAT_IS_STATUS, 'u', 0 },
+    { dat_exp_NTC0_temp,       "exp_NTC0_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC1_temp,       "exp_NTC1_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC2_temp,       "exp_NTC2_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC3_temp,       "exp_NTC3_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC4_temp,       "exp_NTC4_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC5_temp,       "exp_NTC5_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC6_temp,       "exp_NTC6_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_exp_NTC7_temp,       "exp_NTC7_temp",        'u', DAT_IS_STATUS, { .u = 0 } },
 
-		// TEC status
-		{data_exp_tec0_status, "exp_tec0_status", DAT_IS_STATUS, 'u', 0 },        //disabling, heating, cooling, error
-		{data_exp_tec0_voltage, "exp_tec0_voltage", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_tec1_status, "exp_tec1_status", DAT_IS_STATUS, 'u', 0 },        //disabling, heating, cooling, error
-		{data_exp_tec1_voltage, "exp_tec1_voltage", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_tec2_status, "exp_tec2_status", DAT_IS_STATUS, 'u', 0 },        //disabling, heating, cooling, error
-		{data_exp_tec2_voltage, "exp_tec2_voltage", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_tec3_status, "exp_tec3_status", DAT_IS_STATUS, 'u', 0 },        //disabling, heating, cooling, error
-		{data_exp_tec3_voltage, "exp_tec3_voltage", DAT_IS_CONFIG, 'u', 0 },
+    { data_exp_tec0_status,    "exp_tec0_status",      'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_tec0_voltage,   "exp_tec0_voltage",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_tec1_status,    "exp_tec1_status",      'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_tec1_voltage,   "exp_tec1_voltage",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_tec2_status,    "exp_tec2_status",      'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_tec2_voltage,   "exp_tec2_voltage",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_tec3_status,    "exp_tec3_status",      'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_tec3_voltage,   "exp_tec3_voltage",     'u', DAT_IS_CONFIG, { .u = 0 } },
 
+    { data_exp_heater0_duty,   "exp_heater0_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater1_duty,   "exp_heater1_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater2_duty,   "exp_heater2_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater3_duty,   "exp_heater3_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater4_duty,   "exp_heater4_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater5_duty,   "exp_heater5_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater6_duty,   "exp_heater6_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_heater7_duty,   "exp_heater7_duty",     'u', DAT_IS_CONFIG, { .u = 0 } },
 
-		//heater status
-		{data_exp_heater0_duty,"exp_heater0_duty", DAT_IS_CONFIG, 'u', 0 },			//0-100%
-		{data_exp_heater1_duty,"exp_heater1_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater2_duty,"exp_heater2_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater3_duty,"exp_heater3_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater4_duty,"exp_heater4_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater5_duty,"exp_heater5_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater6_duty,"exp_heater6_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_heater7_duty,"exp_heater7_duty", DAT_IS_CONFIG, 'u', 0 },
+    { data_exp_usb_led0_duty,  "exp_usb_led0_duty",    'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_usb_led1_duty,  "exp_usb_led1_duty",    'u', DAT_IS_CONFIG, { .u = 0 } },
 
-		//USB led
-		{data_exp_usb_led0_duty,"exp_usb_led0_duty", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_usb_led1_duty,"exp_usb_led1_duty", DAT_IS_CONFIG, 'u', 0 },
+    { data_exp_12V_heater_status,    "exp_12V_heater_status",    'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_12V_heater_current,   "exp_12V_heater_current",   'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_12V_solenoid_status,  "exp_12V_solenoid_status",  'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_12V_solenoid_current, "exp_12V_solenoid_current", 'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_5V_IO_status,         "exp_5V_IO_status",         'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_5V_IO_current,        "exp_5V_IO_current",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_5V_HD_status,         "exp_5V_HD_status",         'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_5V_HD_current,        "exp_5V_HD_current",        'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_5V_TEC_status,        "exp_5V_TEC_status",        'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_5V_TEC_current,       "exp_5V_TEC_current",       'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_5V_CAM_status,        "exp_5V_CAM_status",        'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_5V_CAM_current,       "exp_5V_CAM_current",       'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_12V_photo_status,     "exp_12V_photo_status",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_12V_photo_current,    "exp_12V_photo_current",    'u', DAT_IS_STATUS, { .u = 0 } },
+    { data_exp_12V_laser_status,     "exp_12V_laser_status",     'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_12V_laser_current,    "exp_12V_laser_current",    'u', DAT_IS_STATUS, { .u = 0 } },
 
-		//power status
-		{data_exp_12V_heater_status,"exp_12V_heater_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_12V_heater_current,"exp_12V_heater_status", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_12V_solenoid_status,"exp_12V_solenoid_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_12V_solenoid_current,"exp_12V_solenoid_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_5V_IO_status,"exp_5V_IO_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_5V_IO_current,"exp_5V_IO_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_5V_HD_status,"exp_5V_HD_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_5V_HD_current,"exp_5V_HD_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_5V_TEC_status,"exp_5V_TEC_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_5V_TEC_current,"exp_5V_TEC_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_5V_CAM_status,"exp_5V_CAM_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_5V_CAM_current,"exp_5V_CAM_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_12V_photo_status,"exp_12V_photo_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_12V_photo_current,"exp_12V_photo_current", DAT_IS_STATUS, 'u', 0 },
-		{data_exp_12V_laser_status,"exp_12V_laser_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_12V_laser_current,"exp_12V_laser_current", DAT_IS_STATUS, 'u', 0 },
+    { data_exp_hd0_status,      "exp_hd0_status",       'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_hd1_status,      "exp_hd1_status",       'u', DAT_IS_CONFIG, { .u = 0 } },
+    { data_exp_hd2_status,      "exp_hd2_status",       'u', DAT_IS_CONFIG, { .u = 0 } },
 
-		// HD driver
-		{data_exp_hd0_status,"exp_hd0_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_hd1_status,"exp_hd1_status", DAT_IS_CONFIG, 'u', 0 },
-		{data_exp_hd2_status,"exp_hd2_status", DAT_IS_CONFIG, 'u', 0 },
-	    /// COM: Communications system variables.
-	    {dat_com_count_tm, "com_count_tm", DAT_IS_STATUS, 'u', 0 },            ///< Number of Telemetries sent
-	    {dat_com_count_tc, "com_count_tc", DAT_IS_STATUS, 'u', 0 },             ///< Number of received Telecommands
-
+    { dat_com_count_tm,         "com_count_tm",         'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_com_count_tc,         "com_count_tc",         'u', DAT_IS_STATUS, { .u = 0 } },
+    { dat_com_last_tc,          "dat_com_last_tc",      'u', DAT_IS_STATUS, { .u = 0 } }
 };
+
+
 ///< The dat_status_last_var constant serves for looping through all status variables
 static const int dat_status_last_var = sizeof(dat_status_list) / sizeof(dat_status_list[0]);
 
@@ -311,9 +310,7 @@ typedef struct __attribute__((__packed__)) sta_data {
     uint32_t sta_buff[sizeof(dat_status_list) / sizeof(dat_status_list[0])];
 } sta_data_t;
 
-static data_map_t data_map[last_sensor] = {
-//    {"temp_data",      (uint16_t) (sizeof(temp_data_t)), dat_drp_idx_temp, dat_drp_ack_temp, "%u %u %f", "sat_index timestamp obc_temp_1"},
-};
+
 
 /** The repository's name */
 #define DAT_TABLE_STATUS "dat_status"      ///< Status variables table name

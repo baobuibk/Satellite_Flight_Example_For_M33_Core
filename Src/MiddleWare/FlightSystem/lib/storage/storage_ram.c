@@ -15,6 +15,7 @@
  */
 
 #include "storage.h"
+#include "osMalloc.h"
 
 ///< Status variables buffer
 static value32_t *status_db = NULL;
@@ -47,7 +48,7 @@ int storage_close(void)
     if(status_db != NULL) { os_free(status_db); status_db = NULL; }
     if(flightplan_db != NULL) { os_free(flightplan_db); flightplan_db = NULL; }
     if(payload_db != NULL) { os_free(payload_db); payload_db = NULL; }
-    if(payloads_sections_addresses != NULL) { os_free(payloads_sections_addresses); payloads_sections_addresses == NULL; }
+    if(payloads_sections_addresses != NULL) { os_free(payloads_sections_addresses); payloads_sections_addresses = NULL; }
 
     return SCH_ST_OK;
 }

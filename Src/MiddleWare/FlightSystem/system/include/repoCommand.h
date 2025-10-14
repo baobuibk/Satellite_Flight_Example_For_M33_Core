@@ -36,6 +36,7 @@
  */
 #define cmd_send(cmd) if(&cmd != NULL){osQueueSend(dispatcher_queue, &cmd, portMAX_DELAY);}
 
+
 /* Command definitions */
 
 /**
@@ -58,20 +59,18 @@ typedef struct cmd_args {
  * If the error field is other than 0, then it is assumed the command created a result value.
  */
 typedef struct cmd_result {
-    int32_t error;
-    value32_t result;
+	int32_t			id;
+    int32_t 		error;
+    value32_t 		result;
+    uint32_t 		outputSize;
+    uint8_t 		output[SCH_BUFF_MAX_LEN]	;
 } cmd_result_t;
 
-/**
- * Define commands return values
- */
-#define CMD_OK (cmd_result_t){  0, {0}}             ///< Command executed successfully
-#define CMD_ERROR (cmd_result_t){ 1, {0}}          ///< Command not executed as expected
-#define CMD_SYNTAX_ERROR (cmd_result_t){ -1, {0}}  ///< Command parameters syntax error
-#define CMD_ERROR_CODE(x) (cmd_result_t){ (int32_t)(x), {0}}  ///< Command returns error code
 
+#define CMD_SRC_CONSOLE	0
+#define CMD_SRC_CSP		1
 
-typedef cmd_result_t (*cmdFunction)(uint32_t argc, uint8_t *argv[]);
+typedef void (*cmdFunction)(uint32_t argc, uint8_t *argv[],  cmd_result_t * result);
 
 
 /**
@@ -79,6 +78,7 @@ typedef cmd_result_t (*cmdFunction)(uint32_t argc, uint8_t *argv[]);
  */
 typedef struct cmd_type {
     int32_t id; ///< Command id
+    uint32_t cmdSrc;
     cmd_args_t args; ///< Command arguments
     cmdFunction function; ///< Command function
 } cmd_t;

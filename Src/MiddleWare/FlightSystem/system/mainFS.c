@@ -34,12 +34,12 @@ int suchai_main(void)
 
     /* Initializing shared Queues */
     dispatcher_queue = osQueueCreate(SCH_CMD_QUEUE_LEN,sizeof(cmd_t));	// static allocation for command
-    executer_stat_queue = osQueueCreate(1,sizeof(int));
-    executer_cmd_queue = osQueueCreate(1,sizeof(cmd_t));
+    console_status_queue = osQueueCreate(1,sizeof(cmd_result_t));
+    comm_status_queue = osQueueCreate(1,sizeof(cmd_result_t));
 
     if(dispatcher_queue == 0) LOGE(tag, "Error creating dispatcher queue");
-    if(executer_stat_queue == 0) LOGE(tag, "Error creating executer stat queue");
-    if(executer_cmd_queue == 0) LOGE(tag, "Error creating executer cmd queue");
+    if(console_status_queue == 0) LOGE(tag, "Error creating executer stat queue");
+    if(comm_status_queue == 0) LOGE(tag, "Error creating executer cmd queue");
 
     os_thread threads_id[4];
 
@@ -53,10 +53,10 @@ int suchai_main(void)
       int t_ini_ok = osCreateTask(taskInit, "init", SCH_TASK_INI_STACK, NULL, 2, &threads_id[3]);
 
     /* Check if the task were created */
- //   if(t_inv_ok != 0) LOGE(tag, "Task invoker not created!");
+    if(t_inv_ok != 0) LOGE(tag, "Task taskDispatcher not created!");
 //    if(t_exe_ok != 0) LOGE(tag, "Task receiver not created!");
 //    if(t_wdt_ok != 0) LOGE(tag, "Task watchdog not created!");
- //   if(t_ini_ok != 0) LOGE(tag, "Task init not created!");
+    if(t_ini_ok != 0) LOGE(tag, "Task init not created!");
 
     /* Start the scheduler. Should never return */
     osScheduler(threads_id, 4);

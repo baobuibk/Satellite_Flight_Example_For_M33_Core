@@ -16,6 +16,7 @@
 
 #include "taskCommunications.h"
 #include "repoDataSchema.h"
+#include "repoData.h"
 #include "cmdCOM.h"
 #include "error_codes.h"
 

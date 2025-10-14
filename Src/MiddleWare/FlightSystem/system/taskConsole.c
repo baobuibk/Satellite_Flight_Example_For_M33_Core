@@ -15,6 +15,11 @@
  */
 
 #include "taskConsole.h"
+#include "repoData.h"
+#include "repoCommand.h"
+#include "repoDataSchema.h"
+#include "globals.h"
+#include "bsp_uart.h"
 #include "printf.h"
 #include "error_codes.h"
 static const char *tag = "Console";
@@ -29,17 +34,18 @@ static const char console_banner[] =
 "______________________________________________________________________________\r\n";
 
 
+
 //"\n\n====== WELCOME TO THE SUCHAI CONSOLE - PRESS ANY KEY TO START ======\n\r";
 
 void taskConsole(void *param)
 {
     LOGI(tag, "Started");
     uint32_t retVal;
-    portTick delay_ms = 10;
     cmd_t 		new_cmd;
     uint8_t 	buffer[SCH_BUFF_MAX_LEN];
     uint32_t 	commandBufferIndex = 0;
     uint8_t	rxData;
+    cmd_result_t console_command_ret;
     /* Initializing console */
     memset(buffer, '\0', SCH_BUFF_MAX_LEN);
     console_init();
@@ -48,7 +54,7 @@ void taskConsole(void *param)
 
     while(1)
     {
-        osDelay(delay_ms);
+        osDelay(10);
 
 
         while(_getchar(&rxData) == 0)
@@ -64,10 +70,26 @@ void taskConsole(void *param)
 					if (CMDLINE_OK == retVal)
 					{
 
-				            LOGD(tag, "sent command %s\n\r", new_cmd.args.args);
+				            LOGI(tag, "sent command %s\n\r", new_cmd.args.args);
 
 				            /* Queue NewCmd - Blocking */
-				            cmd_send(new_cmd);
+				            value32_t cmds_id =  dat_get_status_var(dat_exp_cmds);
+				            new_cmd.id = cmds_id.i;
+				            cmds_id.i = cmds_id.i + 1;
+				            dat_set_status_var(dat_exp_cmds, cmds_id);
+
+				            new_cmd.cmdSrc = CMD_SRC_CONSOLE;
+				            cmd_send(new_cmd);	//sendout the command
+				            if (pdPASS == osQueueReceive(console_status_queue, &console_command_ret, 1000))
+				            {
+					            if (ERROR_OK == console_command_ret.error)
+					            {
+					            	printf((char *)console_command_ret.output);
+					            }
+					            else printf("ERROR\r\n");
+
+				            }
+
 				        }
 				        else
 				        {
