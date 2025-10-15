@@ -80,7 +80,7 @@ void taskConsole(void *param)
 
 				            new_cmd.cmdSrc = CMD_SRC_CONSOLE;
 				            cmd_send(new_cmd);	//sendout the command
-				            if (pdPASS == osQueueReceive(console_status_queue, &console_command_ret, 1000))
+				            if (pdPASS == osQueueReceive(console_status_queue, &console_command_ret, 2000))
 				            {
 					            if (ERROR_OK == console_command_ret.error)
 					            {

@@ -9,6 +9,7 @@
 #include "error_codes.h"
 #include "cmdConsole.h"
 #include "powerCommand.h"
+#include "cmdComm.h"
 
 
 const char * ErrorCode[5] = {"OK\r\n", "CMDLINE_BAD_CMD\r\n", "CMDLINE_TOO_MANY_ARGS\r\n",
@@ -37,6 +38,10 @@ enum {
 	POWER_HEATER_STATUS,
 	POWER_SOLENOID_CONTROL,
 	POWER_SOLENOID_STATUS,
+
+
+
+	COMM_PING,
 	MAX_COMMAND
 };
 
@@ -72,7 +77,7 @@ cmd_table_entry_t g_psCmdTable[] = {
 	{ POWER_SOLENOID_CONTROL, "power_solenoid_control", Cmd_help,    " : control 12V solenoid, format: power_solenoid_control status (on/off)" },
 	{ POWER_SOLENOID_STATUS, "power_solenoid_status",Cmd_help, " : get 12V solenoid status, format: power_solenoid_status" },
 
-
+	{COMM_PING, "csp_ping",cmd_comm_ping, " : ping CSP server, format: csp_ping csp_id"},
 	{MAX_COMMAND,0,0,0}
 };
 

@@ -28,10 +28,15 @@ RM := rm -rf
 -include Src/MiddleWare/FlightSystem/lib/libcsp/src/arch/subdir.mk
 -include Src/MiddleWare/FlightSystem/lib/libcsp/src/subdir.mk
 -include Src/MiddleWare/FlightSystem/drivers/stm32/subdir.mk
+-include Src/Drivers/Devices/tca6416/subdir.mk
+-include Src/Drivers/Devices/pca9685/subdir.mk
+-include Src/Drivers/Devices/MCP4902/subdir.mk
 -include Src/Drivers/Devices/LT8722/subdir.mk
+-include Src/Drivers/Devices/ADG1414BR/subdir.mk
 -include Src/Drivers/Components/uart/stm32/subdir.mk
 -include Src/Drivers/Components/spi/stm32/subdir.mk
 -include Src/Drivers/Components/spi/subdir.mk
+-include Src/Drivers/Components/ntc/subdir.mk
 -include Src/Drivers/Components/i2c/stm32/subdir.mk
 -include Src/Drivers/Components/dio/stm32/subdir.mk
 -include Src/BSP/subdir.mk

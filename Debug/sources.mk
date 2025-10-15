@@ -30,10 +30,15 @@ Src/App/src/system \
 Src/BSP \
 Src/Drivers/Components/dio/stm32 \
 Src/Drivers/Components/i2c/stm32 \
+Src/Drivers/Components/ntc \
 Src/Drivers/Components/spi \
 Src/Drivers/Components/spi/stm32 \
 Src/Drivers/Components/uart/stm32 \
+Src/Drivers/Devices/ADG1414BR \
 Src/Drivers/Devices/LT8722 \
+Src/Drivers/Devices/MCP4902 \
+Src/Drivers/Devices/pca9685 \
+Src/Drivers/Devices/tca6416 \
 Src/MiddleWare/FlightSystem/drivers/stm32 \
 Src/MiddleWare/FlightSystem/lib/libcsp/src/arch \
 Src/MiddleWare/FlightSystem/lib/libcsp/src/arch/freertos \
