@@ -13,6 +13,11 @@
  *	POWER_OFF
 * };
  */
+void bsp_power_IO_ctrl(uint32_t status)
+{
+
+}
+
 void bsp_power_12V_ctrl(uint32_t status)
 {
 

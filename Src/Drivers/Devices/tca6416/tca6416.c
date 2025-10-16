@@ -9,7 +9,7 @@ static int write_reg16(tca6416a_t* dev, uint8_t reg, uint16_t v)
     buf[1] = (uint8_t)(v & 0xFF);
     buf[2] = (uint8_t)(v >> 8);
     int w = (int)i2c_io_send(dev->bus, dev->addr7, (const char*)buf, 3);
-    return (w == 3) ? 0 : -1;
+    return (w == 3) ? 0 : 1;
 }
 
 static int read_reg16(tca6416a_t* dev, uint8_t reg, uint16_t* out)
@@ -17,11 +17,11 @@ static int read_reg16(tca6416a_t* dev, uint8_t reg, uint16_t* out)
     /* Ghi con trỏ thanh ghi, sau đó đọc 2 byte */
     uint8_t r = reg;
     int w = (int)i2c_io_send(dev->bus, dev->addr7, (const char*)&r, 1);
-    if (w != 1) return -1;
+    if (w != 1) return 1;
 
     uint8_t b[2] = {0,0};
     int rcv = (int)i2c_io_recv(dev->bus, dev->addr7, (char*)b, 2);
-    if (rcv != 2) return -2;
+    if (rcv != 2) return 2;
 
     *out = (uint16_t)b[0] | ((uint16_t)b[1] << 8);
     return 0;
@@ -40,16 +40,16 @@ int tca6416a_init(tca6416a_t* dev, i2c_io_t* bus, uint8_t addr7)
     /* Probe bằng cách đọc INPUT */
     uint16_t tmp = 0;
     if (read_reg16(dev, TCA6416A_REG_INPUT0, &tmp) < 0)
-        return -2;
+        return 2;
 
     /* Đồng bộ cache CONFIG & OUTPUT thực tế */
     if (read_reg16(dev, TCA6416A_REG_CFG0, &dev->cache_cfg) < 0)
-        return -3;
+        return 3;
 
     /* Đọc input hiện tại rồi “trộn” vào cache_out cho các bit input */
     uint16_t in_now = 0;
     if (read_reg16(dev, TCA6416A_REG_INPUT0, &in_now) < 0)
-        return -4;
+        return 4;
     dev->cache_out = (dev->cache_out & (uint16_t)~dev->cache_cfg) | (in_now & dev->cache_cfg);
 
     return 0;
@@ -60,7 +60,7 @@ int tca6416a_read_inputs(tca6416a_t* dev, uint16_t* in16)
     if (!dev || !in16) return -1;
     uint16_t v = 0;
     int rc = read_reg16(dev, TCA6416A_REG_INPUT0, &v);
-    if (rc < 0) return rc;
+    if (rc > 0) return rc;
 
     /* Giữ cache_out cho các bit output, cập nhật các bit input từ phần cứng */
     dev->cache_out = (dev->cache_out & (uint16_t)~dev->cache_cfg) | (v & dev->cache_cfg);
@@ -70,9 +70,9 @@ int tca6416a_read_inputs(tca6416a_t* dev, uint16_t* in16)
 
 int tca6416a_write_outputs(tca6416a_t* dev, uint16_t out16)
 {
-    if (!dev) return -1;
+    if (!dev) return 1;
     int rc = write_reg16(dev, TCA6416A_REG_OUTPUT0, out16);
-    if (rc < 0) return rc;
+    if (rc > 0) return rc;
     dev->cache_out = out16;
     return 0;
 }
@@ -89,7 +89,7 @@ int tca6416a_write_modes(tca6416a_t* dev, uint16_t mode16)
 {
     if (!dev) return -1;
     int rc = write_reg16(dev, TCA6416A_REG_CFG0, mode16);
-    if (rc < 0) return rc;
+    if (rc > 0) return rc;
     dev->cache_cfg = mode16;
     return 0;
 }
@@ -99,7 +99,7 @@ int tca6416a_read_modes(tca6416a_t* dev, uint16_t* mode16)
     if (!dev || !mode16) return -1;
     uint16_t v = 0;
     int rc = read_reg16(dev, TCA6416A_REG_CFG0, &v);
-    if (rc < 0) return rc;
+    if (rc > 0) return rc;
     dev->cache_cfg = v;
     *mode16 = v;
     return 0;
@@ -129,7 +129,7 @@ int tca6416a_pin_read(tca6416a_t* dev, uint8_t pin)
     if (!dev || pin > 15) return -1;
     uint16_t v = 0;
     int rc = tca6416a_read_inputs(dev, &v);
-    if (rc < 0) return rc;
+    if (rc > 0) return rc;
     return (v & BIT(pin)) ? 1 : 0;
 }
 

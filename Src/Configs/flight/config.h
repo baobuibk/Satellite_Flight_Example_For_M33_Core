@@ -122,4 +122,6 @@
 #define SCH_CMD_MAX_STR_FORMAT        (248)  ///< Limit for the length of the format field of a command
 #define SCH_CMD_MAX_ARG        (248)  ///< Limit for the length of the format field of a command
 
+#define TEMPERATURE_DELTA			  50	// different temperature between pri and sec NTC
+
 #endif //SUCHAI_CONFIG_H

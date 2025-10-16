@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "i2c_io.h"
+#include "error_codes.h"   /* <-- dùng mã lỗi dương chuẩn */
 
 /* ---------------- Register map ---------------- */
 #define PCA9685_MODE1            0x00
@@ -33,16 +34,19 @@ typedef struct {
 __attribute__((weak)) void pca9685_delay_ms(uint32_t ms);
 
 /* ---------------- API chính ---------------- */
-/* 1) Khởi động chip: bật AI, OUTDRV, clear outputs, soft-restart */
+/* 1) Khởi động chip: bật AI, OUTDRV, clear outputs, soft-restart
+ *    Trả về: ERROR_OK nếu thành công; lỗi I2C -> ERROR_I2C_TIMEOUT; tham số -> ERROR_INVALID_PARAM
+ */
 int pca9685_init_min(pca9685_t* dev, i2c_io_t* bus, uint8_t addr7);
 
-/* 2) Đặt tần số PWM toàn chip (Hz), hợp lệ ~24..1526 */
+/* 2) Đặt tần số PWM toàn chip (Hz), hợp lệ ~24..1526 (sẽ được clamp)
+ *    Trả về: ERROR_OK / ERROR_I2C_TIMEOUT / ERROR_INVALID_PARAM
+ */
 int pca9685_set_freq_hz(pca9685_t* dev, uint16_t freq_hz);
 
 /* 3) Đặt duty cho kênh (0..15) theo phần nghìn (0..1000).
-      - 0    -> FULL OFF
-      - 1000 -> FULL ON
-      - khác -> PWM bình thường (ON=0, OFF=counts) */
+ *    0    -> FULL OFF; 1000 -> FULL ON; khác -> PWM (ON=0, OFF=counts)
+ */
 int pca9685_set_duty_permille(pca9685_t* dev, uint8_t ch, uint16_t duty_permil);
 
 /* Tiện: đặt theo phần trăm (0..100) – wrapper cho permille */

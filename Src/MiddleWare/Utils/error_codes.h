@@ -88,9 +88,16 @@ CMDLINE_NOT_RETURN
 
 
 enum {
-	POWER_ON = 0,
-	POWER_OFF
+	POWER_OFF = 0,
+	POWER_ON
+
 };
+
+enum {
+	LOW = 0,
+	HIGH
+};
+
 
 #endif /* ERROR_CODES_H */
 

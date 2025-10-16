@@ -127,6 +127,55 @@ typedef enum dat_status_address_enum {
     dat_com_count_tm,             ///< Number of Telemetries sent
     dat_com_count_tc,             ///< Number of received Telecommands
     dat_com_last_tc,              ///< Unix time of the last received Telecommand
+    dat_status_last_address ,          ///< Dummy element, the amount of status variables
+
+	//temperature control profile (keep temperature above 0)
+	conf_temp_profile0_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_temp_profile0_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_temp_profile0_setpoint,			//setpoint for profile 0
+	conf_temp_profile0_duty,
+	conf_temp_profile0_heater,			//position of heaters to control
+	//temperature control profile (keep temperature above 0)
+	conf_temp_profile1_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_temp_profile1_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_temp_profile1_setpoint,			//setpoint for profile 1
+	conf_temp_profile1_duty,
+	conf_temp_profile1_heater,			//position of heaters to control
+	//temperature control profile (keep temperature above 0)
+	conf_temp_profile2_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_temp_profile2_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_temp_profile2_setpoint,			//setpoint for profile 2
+	conf_temp_profile2_duty,
+	conf_temp_profile2_heater,			//position of heaters to control
+	//temperature control profile (keep temperature above 0)
+	conf_temp_profile3_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_temp_profile3_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_temp_profile3_setpoint,			//setpoint for profile 0
+	conf_temp_profile3_duty,
+	conf_temp_profile3_heater,			//position of heaters to control
+
+
+	//experiment temperature control profile (keep temperature above rampup/ramp down)
+	//temperature control profile (keep temperature above 0)
+
+	conf_exp_temp_profile0_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_exp_temp_profile0_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_exp_temp_profile0_heater,			//position of heaters to control
+	conf_exp_temp_profile0_upper_setpoint,
+	conf_exp_temp_profile0_lower_setpoint,
+
+	conf_exp_temp_profile1_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_exp_temp_profile1_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_exp_temp_profile1_heater,			//position of heaters to control
+	conf_exp_temp_profile1_upper_setpoint,
+	conf_exp_temp_profile1_lower_setpoint,
+
+	conf_photo_temp_profile_pri_NTC,			//position of NTC need to control (0-7), FF if no use of this profile
+	conf_photo_temp_profile_sec_NTC,			//position of secondary NTC (0-7), FF if no need
+	conf_photo_temp_profile_heater,			//position of heaters to control
+	conf_photo_temp_profile_tec,			//position of heaters to control
+	conf_photo_temp_profile_setpoint,
+
 
     /// FPL: Flight plan related variables
     //dat_experiment_plan_last,                 ///< Last executed experiment time (unix time)
@@ -142,7 +191,6 @@ typedef enum dat_status_address_enum {
     //dat_custom,                 ///< Variable description
 
     /// LAST ELEMENT: DO NOT EDIT
-    dat_status_last_address           ///< Dummy element, the amount of status variables
 } dat_status_address_t;
 
 ///**

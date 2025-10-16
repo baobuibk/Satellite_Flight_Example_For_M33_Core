@@ -8,6 +8,6 @@
 #ifndef BSP_BSP_TEMP_H_
 #define BSP_BSP_TEMP_H_
 
-
+uint32_t bsp_Adc0_update();
 
 #endif /* BSP_BSP_TEMP_H_ */

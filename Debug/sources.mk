@@ -34,9 +34,12 @@ Src/Drivers/Components/ntc \
 Src/Drivers/Components/spi \
 Src/Drivers/Components/spi/stm32 \
 Src/Drivers/Components/uart/stm32 \
+Src/Drivers/Devices/AD4114 \
 Src/Drivers/Devices/ADG1414BR \
+Src/Drivers/Devices/AS3004204 \
 Src/Drivers/Devices/LT8722 \
 Src/Drivers/Devices/MCP4902 \
+Src/Drivers/Devices/RV3129 \
 Src/Drivers/Devices/pca9685 \
 Src/Drivers/Devices/tca6416 \
 Src/MiddleWare/FlightSystem/drivers/stm32 \
