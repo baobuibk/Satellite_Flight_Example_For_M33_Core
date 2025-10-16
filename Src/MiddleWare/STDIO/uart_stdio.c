@@ -71,8 +71,8 @@ uint32_t uart_stdio_write(UART_stdio_t* me, const uint8_t * buffer, uint32_t num
         return ERROR_NOT_READY;
     }
     // Nếu không có truyền đang diễn ra, kích hoạt truyền
-//	 os_enterCritical();
-	__asm volatile ("cpsid i");
+	 os_enterCritical();
+//	__asm volatile ("cpsid i");
     if (!me->tx_busy) {
 
         data = buffer[0];
@@ -88,8 +88,8 @@ uint32_t uart_stdio_write(UART_stdio_t* me, const uint8_t * buffer, uint32_t num
         }
         count++;
     }
-//    os_exitCritical();
-    __asm volatile ("cpsie i");
+   os_exitCritical();
+ //   __asm volatile ("cpsie i");
     return result;
 }
 

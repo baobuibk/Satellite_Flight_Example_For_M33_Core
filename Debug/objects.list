@@ -41,6 +41,7 @@
 "./Src/BSP/bsp_temp.o"
 "./Src/BSP/bsp_uart.o"
 "./Src/Drivers/Components/dio/stm32/do.o"
+"./Src/Drivers/Components/i2c/i2c_io.o"
 "./Src/Drivers/Components/i2c/stm32/stm32_i2c_io.o"
 "./Src/Drivers/Components/ntc/ntc.o"
 "./Src/Drivers/Components/spi/spi_io.o"

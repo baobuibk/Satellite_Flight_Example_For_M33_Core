@@ -13,13 +13,14 @@
 
 extern SPI_Io_t spi1;
 extern do_t 	adc0_cs;
+extern do_t 	adc1_cs;
 ad4114_t adcDev0 = {
 		.spi = &spi1,
 		.cs  = &adc0_cs
 };
 ad4114_t adcDev1 = {
 		.spi = &spi1,
-		.cs  = &adc0_cs
+		.cs  = &adc1_cs
 };
 #define NTC_CHANNEL_NUM	8
 
@@ -28,7 +29,16 @@ static  uint32_t adc1Result[16] = {0};
 
 
 int32_t	NTC_temperature[NTC_CHANNEL_NUM] = {0};
-uint32_t bsp_Adc0_update()
+
+
+uint32_t bsp_adc_init()
+{
+	uint32_t ret;
+	ret =  ad4114_init(&adcDev0, &spi1, &adc0_cs);
+	ret +=  ad4114_init(&adcDev1, &spi1, &adc0_cs);
+}
+
+uint32_t bsp_adc0_update()
 {
 	uint16_t out_mask = 0;
 	uint32_t ret;

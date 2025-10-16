@@ -21,3 +21,14 @@ do_t 	adc0_cs = {
 	.port = 4, //GPIO4
 	.pin = 16
 };
+
+do_t 	adc1_cs = {
+	.port = 4, //GPIO4
+	.pin = 20
+};
+
+void board_init()
+{
+	spi_io_init(&spi1);
+	i2c_io_init(&i2c7);
+}

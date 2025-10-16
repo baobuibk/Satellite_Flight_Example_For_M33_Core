@@ -22,43 +22,16 @@ int suchai_main(void)
 {
     /* On reset */
     on_reset();
-    printf("\r\n\r\n--------- FLIGHT SOFTWARE START ---------\r\n");
-    printf("\t Version: %s\r\n", SCH_SW_VERSION);
-    printf("\t Device : %d (%s)\r\n", SCH_DEVICE_ID, SCH_NAME);
-    printf("-----------------------------------------\r\n\r\n");
 
-    /* Init software subsystems */
-    log_init(SCH_LOG_LEVEL, 0);      // Logging system
-    osSemaphoreCreate(&repo_cmd_sem);
-    osSemaphoreCreate(&repo_data_sem);
+      int t_ini_ok = osCreateTask(taskInit, "init", SCH_TASK_INI_STACK, NULL, 2, NULL);
+      if(t_ini_ok != 0)
+      {
+    	  while(1);
+      }
 
-    /* Initializing shared Queues */
-    dispatcher_queue = osQueueCreate(SCH_CMD_QUEUE_LEN,sizeof(cmd_t));	// static allocation for command
-    console_status_queue = osQueueCreate(1,sizeof(cmd_result_t));
-    comm_status_queue = osQueueCreate(1,sizeof(cmd_result_t));
 
-    if(dispatcher_queue == 0) LOGE(tag, "Error creating dispatcher queue");
-    if(console_status_queue == 0) LOGE(tag, "Error creating executer stat queue");
-    if(comm_status_queue == 0) LOGE(tag, "Error creating executer cmd queue");
-
-    os_thread threads_id[4];
-
-    LOGI(tag, "Creating basic tasks...");
-
-//    osCreateTask(taskConsole, "console", SCH_TASK_CON_STACK, NULL, 3, NULL);
-    /* Crating system task (the others are created inside taskInit) */
-    int t_inv_ok = osCreateTask(taskDispatcher,"invoker", SCH_TASK_CON_STACK, NULL, 3, NULL);
- //   int t_exe_ok = osCreateTask(taskExecuter, "receiver", SCH_TASK_EXE_STACK, NULL, 4, &threads_id[1]);
-//    int t_wdt_ok = osCreateTask(taskWatchdog, "watchdog", SCH_TASK_WDT_STACK, NULL, 2, &threads_id[2]);
-      int t_ini_ok = osCreateTask(taskInit, "init", SCH_TASK_INI_STACK, NULL, 2, &threads_id[3]);
-
-    /* Check if the task were created */
-    if(t_inv_ok != 0) LOGE(tag, "Task taskDispatcher not created!");
-//    if(t_exe_ok != 0) LOGE(tag, "Task receiver not created!");
-//    if(t_wdt_ok != 0) LOGE(tag, "Task watchdog not created!");
-    if(t_ini_ok != 0) LOGE(tag, "Task init not created!");
 
     /* Start the scheduler. Should never return */
-    osScheduler(threads_id, 4);
+    osScheduler(NULL, 0);
     return 0;
 }

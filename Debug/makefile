@@ -41,6 +41,7 @@ RM := rm -rf
 -include Src/Drivers/Components/spi/subdir.mk
 -include Src/Drivers/Components/ntc/subdir.mk
 -include Src/Drivers/Components/i2c/stm32/subdir.mk
+-include Src/Drivers/Components/i2c/subdir.mk
 -include Src/Drivers/Components/dio/stm32/subdir.mk
 -include Src/BSP/subdir.mk
 -include Src/App/src/system/subdir.mk

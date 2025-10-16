@@ -123,5 +123,6 @@
 #define SCH_CMD_MAX_ARG        (248)  ///< Limit for the length of the format field of a command
 
 #define TEMPERATURE_DELTA			  50	// different temperature between pri and sec NTC
+#define HOUSE_KEEPING_INTERVAL	1000
 
 #endif //SUCHAI_CONFIG_H

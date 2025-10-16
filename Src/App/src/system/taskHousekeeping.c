@@ -15,22 +15,27 @@
  */
 
 #include "app/system/taskHousekeeping.h"
+#include "repoData.h"
+#include "repoDataSchema.h"
+#include "config.h"
 
 static const char *tag = "Housekeeping";
+
+
 
 void taskHousekeeping(void *param)
 {
     LOGI(tag, "Started");
 
-    portTick delay_ms    = 1000;            //Task period in [ms]
+
 
 
     portTick xLastWakeTime = osTaskGetTickCount();
 
     while(1)
     {
-        osTaskDelayUntil(&xLastWakeTime, delay_ms); //Suspend task
-        bsp_Adc0_update();
+        osTaskDelayUntil(&xLastWakeTime, HOUSE_KEEPING_INTERVAL); //Suspend task
+        bsp_adc0_update();
 
         /* 1 second actions */
  //       dat_set_system_var(dat_rtc_date_time, (int) time(NULL));

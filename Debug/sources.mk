@@ -29,6 +29,7 @@ Src/App \
 Src/App/src/system \
 Src/BSP \
 Src/Drivers/Components/dio/stm32 \
+Src/Drivers/Components/i2c \
 Src/Drivers/Components/i2c/stm32 \
 Src/Drivers/Components/ntc \
 Src/Drivers/Components/spi \
