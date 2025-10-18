@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <string.h>  // for memset if needed
 
+#include "stm32f7xx_ll_spi.h"
+
 #define SPI_MAX_BUS_NUMBER 6
 
 static SPI_TypeDef * const spi_periph[SPI_MAX_BUS_NUMBER + 1] = {
@@ -49,7 +51,50 @@ static __attribute__((unused)) void spi_enable_clock(uint32_t ui32SpiNum)
     }
 }
 
-uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t	*pui8TxBuff, uint8_t	*pui8RxBuff, uint32_t ui32Length)
+void spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
+{
+    if (me == NULL || me->ui32SpiPort == 0 || me->ui32SpiPort > 6)
+        return;
+
+    SPI_TypeDef *spi = spi_periph[me->ui32SpiPort];
+
+    /* Disable SPI before modifying configuration */
+    spi->CR1 &= ~SPI_CR1_SPE;
+
+    /* Clear CPOL and CPHA bits first */
+    spi->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA);
+
+    switch (spi_mode)
+    {
+        case 0:
+            // CPOL = 0, CPHA = 0
+            spi->CR1 |= (0 << SPI_CR1_CPOL_Pos) | (0 << SPI_CR1_CPHA_Pos);
+            break;
+
+        case 1:
+            // CPOL = 0, CPHA = 1
+            spi->CR1 |= (0 << SPI_CR1_CPOL_Pos) | (1 << SPI_CR1_CPHA_Pos);
+            break;
+
+        case 2:
+            // CPOL = 1, CPHA = 0
+            spi->CR1 |= (1 << SPI_CR1_CPOL_Pos) | (0 << SPI_CR1_CPHA_Pos);
+            break;
+
+        case 3:
+            // CPOL = 1, CPHA = 1
+            spi->CR1 |= (1 << SPI_CR1_CPOL_Pos) | (1 << SPI_CR1_CPHA_Pos);
+            break;
+
+        default:
+            break;
+    }
+
+    /* Enable SPI again */
+    spi->CR1 |= SPI_CR1_SPE;
+}
+
+uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t	*pui8TxBuff, uint8_t *pui8RxBuff, uint32_t ui32Length)
 {
     SPI_TypeDef *spi = spi_periph[me->ui32SpiPort];
     uint32_t i;
@@ -58,7 +103,7 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t	*pui8TxBuff, uint8_t	*pui8Rx
         // Wait for TXE
         while (!(spi->SR & SPI_SR_TXE)) {}
         data = pui8TxBuff[i];
-        spi->DR = data;
+        *(volatile uint8_t *)&spi->DR = (uint8_t)data;
         // Wait for RXNE
         while (!(spi->SR & SPI_SR_RXNE)) {}
         uint8_t rec = (uint8_t)spi->DR;
@@ -100,7 +145,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
         // Wait for TXE
         while (!(spi->SR & SPI_SR_TXE)) {}
         data = pui8TxBuff[i];
-        spi->DR = data;
+        *(volatile uint8_t *)&spi->DR = (uint8_t)data;
         // Wait for RXNE
         while (!(spi->SR & SPI_SR_RXNE)) {}
         (void)spi->DR;

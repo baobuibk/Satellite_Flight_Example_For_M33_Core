@@ -119,12 +119,11 @@ uint32_t lt8722_transaction(struct lt8722_dev *dev, struct lt8722_packet *packet
 	} else
 		tx_buffer[2] = Calculate_CRC8(tx_buffer, 2);
 
-
+	//	SPI_write_and_read_buffer(dev, buffer, packet->command.size);
     csLOW(dev);
-    spi_io_transfer_async(dev->hspi, tx_buffer, rx_buffer, packet->command.size);
+    spi_io_transfer_sync(dev->hspi, tx_buffer, rx_buffer, packet->command.size);
     csHIGH(dev);
 
-//	SPI_write_and_read_buffer(dev, buffer, packet->command.size);
 	packet->status = (get_unaligned_be16(&rx_buffer[0]) & GENMASK(10, 0));
 	if (packet->command.byte == LT8722_DATA_WRITE_COMMAND)
 	{
@@ -441,7 +440,7 @@ uint32_t lt8722_init(struct lt8722_dev *dev)
 //		ret = lt8722_set_swen_req(channel, LT8722_SWEN_REQ_DISABLED);
 	if (!ret)
 		{
-		dev->status |= ((1 << TEC_INIT_POS) | (1 << TEC_ENABLED_POS) | (1 << TEC_SWITCH_ENABLED_POS)); //tec is initted
+		dev->status |= ((1 << TEC_INIT_POS) | (1 << TEC_ENABLED_POS) | (1 << TEC_SWITCH_ENABLED_POS));
 		}
 	else dev->status = 0;
 	dev->voltage = 0;
@@ -461,12 +460,10 @@ uint32_t lt8722_set_output_voltage_channel(struct lt8722_dev *dev, tec_dir_t dir
 	int32_t dac = 0x0;
 	if (dir == TEC_COOL)
 	{
-		dev->status &= ~(1 << TEC_DIR_POS);
 		vdac = LT8722_DAC_OFFSET - value / 16;
 	}
 	if (dir == TEC_HEAT)
 	{
-		dev->status |= (1 << TEC_DIR_POS);
 		vdac = LT8722_DAC_OFFSET + value / 16;
 	}
 	dac = lt8722_voltage_to_dac(vdac);

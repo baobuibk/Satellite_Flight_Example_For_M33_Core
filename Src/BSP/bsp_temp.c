@@ -14,6 +14,7 @@
 extern SPI_Io_t spi1;
 extern do_t 	adc0_cs;
 extern do_t 	adc1_cs;
+
 ad4114_t adcDev0 = {
 		.spi = &spi1,
 		.cs  = &adc0_cs

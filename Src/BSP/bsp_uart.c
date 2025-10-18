@@ -27,7 +27,7 @@ static circular_char_buffer_t   uartConsoleRxBuffer = {
 		0
 };;
 UART_stdio_t uartConsole = {
-		1,
+		6,
 		&uartConsoleRxBuffer,
 		&uartConsoleTxBuffer,
 		false,
@@ -51,7 +51,7 @@ uint32_t _getchar(uint8_t * character)
 	return uart_stdio_read_char(&uartConsole, character);
 }
 
-void     USART1_IRQHandler(void)
+void     USART6_IRQHandler(void)
 {
 	uart_stdio_rx_callback(&uartConsole);
 	uart_stdio_tx_callback(&uartConsole);
@@ -75,14 +75,14 @@ static circular_char_buffer_t   uartKissRxBuffer = {
 		0
 };;
 UART_stdio_t uartKiss = {
-		6,
+		3,
 		&uartKissRxBuffer,
 		&uartKissTxBuffer,
 		false,
 		false
 };
 
-void bsp_uart_kiss_init()
+void bsp_uart_kiss_init(void)
 {
 	uart_stdio_active(&uartKiss, KISS_UART_INT_PRI);
 //	while (1)
@@ -95,7 +95,7 @@ void bsp_uart_kiss_init()
 
 }
 
-void     USART6_IRQHandler(void)
+void     USART3_IRQHandler(void)
 {
 	uart_stdio_rx_callback(&uartKiss);
 	uart_stdio_tx_callback(&uartKiss);
